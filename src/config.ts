@@ -42,6 +42,7 @@ async function downloadBinary(version: Version): Promise<string> {
     const url = `https://github.com/DonIsaac/zlint/releases/${downloadPart}/zlint-${os}-${arch}?source=github-actions`
     core.info(`Downloading ZLint binary from ${url}`)
     const bin = await tc.downloadTool(url)
+    await fs.chmod(bin, 0o755)
 
     // TODO: verify the downloaded binary via github attestation
 
