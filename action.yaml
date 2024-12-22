@@ -1,5 +1,10 @@
-name: 'ZLint'
+name: 'ZLint Action'
 description: 'Lint your Zig code with ZLint'
+author: Don Isaac
+branding:
+  icon: zap
+  color: yellow
+  
 
 inputs:
   version:
