@@ -36,7 +36,10 @@ export async function getConfig(): Promise<Config> {
 
 async function downloadBinary(version: Version): Promise<string> {
     const { os, arch } = getOsAndArch()
-    const url = `https://github.com/DonIsaac/zlint/releases/download/${version}/zlint-${os}-${arch}?source=github-actions`
+    const downloadPart = version === 'latest'
+        ? 'latest/download'
+        : `download/${version}`
+    const url = `https://github.com/DonIsaac/zlint/releases/${downloadPart}/zlint-${os}-${arch}?source=github-actions`
     core.info(`Downloading ZLint binary from ${url}`)
     const bin = await tc.downloadTool(url)
 
