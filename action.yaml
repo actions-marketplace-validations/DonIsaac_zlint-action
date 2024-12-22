@@ -1,0 +1,15 @@
+name: 'ZLint'
+description: 'Lint your Zig code with ZLint'
+
+inputs:
+  version:
+    description: Version of ZLint to use.
+    required: true
+    default: 'latest'
+  binary:
+    description: Use a pre-built ZLint binary. Overrides version.
+    required: false
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

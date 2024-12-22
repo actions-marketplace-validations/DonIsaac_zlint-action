@@ -1,0 +1,23 @@
+{
+  "name": "zlint-action",
+  "version": "0.0.0",
+  "description": "GitHub Action for linting with ZLint",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "lint": "oxlint src",
+    "build": "bun build src/index.ts --target=node --outdir dist --sourcemap=external --minify-syntax"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "oxlint": "^0.15.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@actions/tool-cache": "^2.0.1"
+  }
+}
