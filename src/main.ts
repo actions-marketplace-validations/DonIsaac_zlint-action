@@ -5,11 +5,14 @@ import { getConfig } from './config'
 
 export default async function main(): Promise<void> {
     const { binary } = await getConfig()
+    core.debug(`ZLint binary: ${binary}`)
+
     const child = spawn(binary, ['--format', 'github'], {
         stdio: 'inherit',
         env: process.env,
         cwd: process.cwd(),
     })
+
     await new Promise((resolve, reject) => {
         let done = false
 

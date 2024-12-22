@@ -16219,17 +16219,22 @@ var issueUrl = ({ title }) => `https://github.com/DonIsaac/zlint/issues/new?assi
 
 // src/config.ts
 async function getConfig() {
-  let binary = import_core.default.getInput("binary");
-  if (binary)
-    return binary = path.resolve(binary), await verifyExistingBinary(binary), { binary };
-  let version = verifyVersion(import_core.default.getInput("version") || "latest");
-  return {
-    binary: await downloadBinary(version)
-  };
+  import_core.default.startGroup("Configuring ZLint");
+  try {
+    let binary = import_core.default.getInput("binary");
+    if (binary)
+      return import_core.default.info(`Using existing binary at '${binary}'`), binary = path.resolve(binary), await verifyExistingBinary(binary), import_core.default.info("Binary found"), { binary };
+    let version = verifyVersion(import_core.default.getInput("version") || "latest");
+    return {
+      binary: await downloadBinary(version)
+    };
+  } finally {
+    import_core.default.endGroup();
+  }
 }
 async function downloadBinary(version) {
   let { os, arch } = getOsAndArch(), url = `https://github.com/DonIsaac/zlint/releases/download/${version}/zlint-${os}-${arch}?source=github-actions`;
-  return await import_tool_cache.default.downloadTool(url);
+  return import_core.default.info(`Downloading ZLint binary from ${url}`), await import_tool_cache.default.downloadTool(url);
 }
 function getOsAndArch() {
   let { platform, arch: cpuArch } = process, os;
@@ -16269,7 +16274,7 @@ function getOsAndArch() {
 }
 var SEMVER_REGEX = /^v(\d+)\.(\d+)\.(\d+)$/, isSemVer = (version) => SEMVER_REGEX.test(version);
 function verifyVersion(version) {
-  if (version === "latest")
+  if (import_core.default.info(`Verifying version: ${version}`), version === "latest")
     return version;
   let firstChar = version.charCodeAt(0);
   if (!(firstChar >= 48 && firstChar <= 57))
@@ -16299,7 +16304,9 @@ class ConfigError extends Error {
 
 // src/main.ts
 async function main() {
-  let { binary } = await getConfig(), child = spawn(binary, ["--format", "github"], {
+  let { binary } = await getConfig();
+  import_core2.default.debug(`ZLint binary: ${binary}`);
+  let child = spawn(binary, ["--format", "github"], {
     stdio: "inherit",
     env: process.env,
     cwd: process.cwd()
@@ -16331,4 +16338,4 @@ main().catch((err) => {
   import_core3.default.setFailed(err), process.exit(1);
 });
 
-//# debugId=C6D51942C175534364756E2164756E21
+//# debugId=7E29FB12498C1C2C64756E2164756E21

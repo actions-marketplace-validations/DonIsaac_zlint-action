@@ -14,22 +14,30 @@ export interface Config {
 }
 
 export async function getConfig(): Promise<Config> {
-    let binary = core.getInput('binary')
-    if (binary) {
-        binary = path.resolve(binary)
-        await verifyExistingBinary(binary)
-        return { binary }
-    }
+    core.startGroup('Configuring ZLint')
+    try {
+        let binary = core.getInput('binary')
+        if (binary) {
+            core.info(`Using existing binary at '${binary}'`)
+            binary = path.resolve(binary)
+            await verifyExistingBinary(binary)
+            core.info('Binary found')
+            return { binary }
+        }
 
-    const version = verifyVersion(core.getInput('version') || 'latest')
-    return {
-        binary: await downloadBinary(version),
+        const version = verifyVersion(core.getInput('version') || 'latest')
+        return {
+            binary: await downloadBinary(version),
+        }
+    } finally {
+        core.endGroup()
     }
 }
 
 async function downloadBinary(version: Version): Promise<string> {
     const { os, arch } = getOsAndArch()
     const url = `https://github.com/DonIsaac/zlint/releases/download/${version}/zlint-${os}-${arch}?source=github-actions`
+    core.info(`Downloading ZLint binary from ${url}`)
     const bin = await tc.downloadTool(url)
 
     // TODO: verify the downloaded binary via github attestation
@@ -85,11 +93,12 @@ function getOsAndArch() {
     return { os, arch }
 }
 
-function f() {}
+function f() { }
 const SEMVER_REGEX = /^v(\d+)\.(\d+)\.(\d+)$/
 const isSemVer = (version: string): version is SemVer =>
     SEMVER_REGEX.test(version)
 function verifyVersion(version: string): Version {
+    core.info(`Verifying version: ${version}`)
     if (version === 'latest') return version
 
     // add leading `v` if missing
