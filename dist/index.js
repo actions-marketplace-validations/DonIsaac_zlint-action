@@ -16233,7 +16233,7 @@ async function getConfig() {
   }
 }
 async function downloadBinary(version) {
-  let { os, arch } = getOsAndArch(), url = `https://github.com/DonIsaac/zlint/releases/download/${version}/zlint-${os}-${arch}?source=github-actions`;
+  let { os, arch } = getOsAndArch(), url = `https://github.com/DonIsaac/zlint/releases/${version === "latest" ? "latest/download" : `download/${version}`}/zlint-${os}-${arch}?source=github-actions`;
   return import_core.default.info(`Downloading ZLint binary from ${url}`), await import_tool_cache.default.downloadTool(url);
 }
 function getOsAndArch() {
@@ -16338,4 +16338,4 @@ main().catch((err) => {
   import_core3.default.setFailed(err), process.exit(1);
 });
 
-//# debugId=7E29FB12498C1C2C64756E2164756E21
+//# debugId=34A1DC04DB3F308564756E2164756E21
