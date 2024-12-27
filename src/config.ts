@@ -11,28 +11,41 @@ export type Version = 'latest' | SemVer
 export interface Config {
     /** Path to zlint binary */
     binary: string
+    /**
+     * Only lint changed files when job is triggered by a pull request.
+     */
+    diffOnly: boolean
 }
 
 export async function getConfig(): Promise<Config> {
     core.startGroup('Configuring ZLint')
     try {
-        let binary = core.getInput('binary')
+        let { binary, version: versionArg, diffOnly } = getInput()
         if (binary) {
             core.info(`Using existing binary at '${binary}'`)
             binary = path.resolve(binary)
             await verifyExistingBinary(binary)
             core.info('Binary found')
-            return { binary }
+            return { binary, diffOnly }
         }
 
-        const version = verifyVersion(core.getInput('version') || 'latest')
+        const version = verifyVersion(versionArg)
         return {
             binary: await downloadBinary(version),
+            diffOnly,
         }
     } finally {
         core.endGroup()
     }
 }
+const getInput = () => ({
+    binary: core.getInput('binary'),
+    version: core.getInput('version') || 'latest',
+    diffOnly: isYes(core.getInput('diff-only')),
+})
+
+const yes = new Set(['yes', 'y', 'true', '1'])
+const isYes = (opt: string) => Boolean(opt) && yes.has(opt.toLowerCase())
 
 async function downloadBinary(version: Version): Promise<string> {
     const { os, arch } = getOsAndArch()
@@ -97,7 +110,6 @@ function getOsAndArch() {
     return { os, arch }
 }
 
-function f() { }
 const SEMVER_REGEX = /^v(\d+)\.(\d+)\.(\d+)$/
 const isSemVer = (version: string): version is SemVer =>
     SEMVER_REGEX.test(version)

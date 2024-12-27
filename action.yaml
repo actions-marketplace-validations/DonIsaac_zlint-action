@@ -14,6 +14,11 @@ inputs:
   binary:
     description: Use a pre-built ZLint binary. Overrides version.
     required: false
+  diff-only:
+    # note: curr ref is compared to ${{ github.base_ref }}.
+    description: When triggered by a `pull_request`, only lint files that have changed.
+    required: false
+    default: 'true'
 
 runs:
   using: 'node20'
