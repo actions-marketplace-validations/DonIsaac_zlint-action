@@ -19926,7 +19926,7 @@ function zlintGitDiff(binary) {
     cwd: process.cwd()
   });
   return diff.on("error", (err) => {
-    throw zlint2.kill(), err;
+    throw import_core2.default.error(err), zlint2.kill(), err;
   }), zlint2;
 }
 function fetchBaseRef() {
@@ -19941,4 +19941,4 @@ main().catch((err) => {
   import_core3.default.setFailed(err), process.exit(1);
 });
 
-//# debugId=6FBB362A9D93C82364756E2164756E21
+//# debugId=243BF0F8E563C09364756E2164756E21

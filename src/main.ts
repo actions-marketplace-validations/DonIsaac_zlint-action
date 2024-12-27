@@ -73,6 +73,7 @@ function zlintGitDiff(binary: string): ChildProcess {
     })
 
     diff.on('error', err => {
+        core.error(err)
         zlint.kill()
         throw err
     })
