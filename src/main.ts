@@ -60,7 +60,7 @@ function zlint(binary: string): ChildProcess {
 function zlintGitDiff(binary: string): ChildProcess {
     const baseRef = gh.context.payload.pull_request?.base.ref
     if (!baseRef) throw new Error('Could not determine base branch')
-    const diff = spawn('git', ['diff', `${baseRef}...HEAD`, '--name-only'], {
+    const diff = spawn('git', ['diff', `${baseRef}..HEAD`, '--name-only'], {
         stdio: ['inherit', 'pipe', 'inherit'],
         env: process.env,
         cwd: process.cwd(),

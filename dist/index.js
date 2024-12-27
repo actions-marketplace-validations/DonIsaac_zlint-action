@@ -19916,7 +19916,7 @@ function zlintGitDiff(binary) {
   let baseRef = import_github.default.context.payload.pull_request?.base.ref;
   if (!baseRef)
     throw new Error("Could not determine base branch");
-  let diff = spawn("git", ["diff", `${baseRef}...HEAD`, "--name-only"], {
+  let diff = spawn("git", ["diff", `${baseRef}..HEAD`, "--name-only"], {
     stdio: ["inherit", "pipe", "inherit"],
     env: process.env,
     cwd: process.cwd()
@@ -19941,4 +19941,4 @@ main().catch((err) => {
   import_core3.default.setFailed(err), process.exit(1);
 });
 
-//# debugId=5DC5CF026665391064756E2164756E21
+//# debugId=6FBB362A9D93C82364756E2164756E21
